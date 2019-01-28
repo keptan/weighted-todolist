@@ -72,21 +72,26 @@ int main (int argc, char** argv)
 	//build a tree of Integer Ranges paired to a todolist string
 	//ex: 0 - 1 to dishes, 2 - 100 save the world
 	//later when we use uniform dist to pick a random range, it will be much more likely we get assigned 'save the world' than 'do dishes'
-	const auto RangeSet		= (priorityPair | Fold( [](const auto tuple, const auto acc) -> std::tuple< Tree<RangeString>, int>
-								{
-									const int floor		= std::get<1>(acc);	
-									const int ceiling	= std::get<1>(acc) + std::get<0>(tuple);
-									const String string = std::get<1>(tuple);
-									const auto accTree	= std::get<0>(acc);
+	
+	//atleast make an ATTEMPT to see if we don't have any files todo 
+	if((fileNames | Length() ).eval())
+	{
+		const auto RangeSet		= (priorityPair | Fold( [](const auto tuple, const auto acc) -> std::tuple< Tree<RangeString>, int>
+									{
+										const int floor		= std::get<1>(acc);	
+										const int ceiling	= std::get<1>(acc) + std::get<0>(tuple);
+										const String string = std::get<1>(tuple);
+										const auto accTree	= std::get<0>(acc);
 
 
-									return std::make_tuple(	accTree.push( RangeString( Integers(floor + 1, ceiling), string)), 
-											ceiling);
-								}, std::make_tuple( Tree<RangeString>(), 0) )).eval() ;
+										return std::make_tuple(	accTree.push( RangeString( Integers(floor + 1, ceiling), string)), 
+												ceiling);
+									}, std::make_tuple( Tree<RangeString>(), 0) )).eval() ;
 
-	//get a random int between 1 and the sum of priorities
-	const int random		= (UniformDist(1, std::get<1>(RangeSet)) | Take(1) ) .get();
+		//get a random int between 1 and the sum of priorities
+		const int random		= (UniformDist(1, std::get<1>(RangeSet)) | Take(1) ) .get();
 
-	//select, and output a todolist item, weighted by priority
-	std::cout << std::get<0>(RangeSet).get(random).value().string;
+		//select, and output a todolist item, weighted by priority
+		std::cout << std::get<0>(RangeSet).get(random).value().string;
+	}
 }
