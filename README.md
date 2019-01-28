@@ -26,4 +26,8 @@ priorityGet
 With >25x speed improvements. I imagine it could be done alot faster in bash, maybe appending to a temp file or something (replicate the range tree method even) . GNU shuf is really fast, but appending to a bash variable is stupid slow.
 
 # compiling
-fun lib relies heavily on c++17 features ```g++ priorityList.cpp -O3 -std=c++17  ```
+fun lib relies heavily on c++17 features 
+```
+g++ priorityList.cpp -O3 -std=c++17 
+./a.out todo 8ball
+```
